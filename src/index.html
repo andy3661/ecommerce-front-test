@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>E-commerce Store - Premium Shopping Experience</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Modern e-commerce platform with advanced features and seamless shopping experience">
+  <meta name="keywords" content="ecommerce, shopping, online store, products, cart, checkout">
+  <meta name="author" content="E-commerce Store">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#1f2937">
+  <meta name="msapplication-TileColor" content="#1f2937">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  
+  <!-- iOS Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="E-Store">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#1f2937">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://www.google-analytics.com">
+  
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="E-commerce Store - Premium Shopping Experience">
+  <meta property="og:description" content="Modern e-commerce platform with advanced features and seamless shopping experience">
+  <meta property="og:image" content="/assets/images/og-image.jpg">
+  <meta property="og:url" content="https://your-domain.com">
+  <meta property="og:site_name" content="E-commerce Store">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="E-commerce Store - Premium Shopping Experience">
+  <meta name="twitter:description" content="Modern e-commerce platform with advanced features and seamless shopping experience">
+  <meta name="twitter:image" content="/assets/images/twitter-card.jpg">
+  
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "E-commerce Store",
+    "description": "Modern e-commerce platform with advanced features and seamless shopping experience",
+    "url": "https://your-domain.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://your-domain.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <!-- Critical CSS will be inlined here by build process -->
+  <style>
+    /* Critical CSS for initial render */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #ffffff;
+      color: #1f2937;
+    }
+    
+    app-root {
+      display: block;
+      min-height: 100vh;
+    }
+    
+    /* Loading spinner */
+    .app-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      color: white;
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <app-root>
+    <!-- Loading fallback -->
+    <div class="app-loading">
+      <div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Cargando tienda...</div>
+      </div>
+    </div>
+  </app-root>
+  
+  <!-- Noscript fallback -->
+  <noscript>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h1>JavaScript Requerido</h1>
+      <p>Esta aplicación requiere JavaScript para funcionar correctamente.</p>
+      <p>Por favor, habilita JavaScript en tu navegador e intenta de nuevo.</p>
+    </div>
+  </noscript>
+</body>
+</html>

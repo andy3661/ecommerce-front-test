@@ -1,0 +1,217 @@
+// Register component specific styles
+.register-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.register-form {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+// Custom input focus styles
+.form-input {
+  transition: all 0.3s ease;
+  
+  &:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  }
+}
+
+// Password strength indicator animations
+.password-strength {
+  .strength-bar {
+    transition: all 0.3s ease;
+  }
+  
+  .strength-text {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Button hover effects
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Social login buttons
+.social-btn {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Error message animation
+.error-message {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Form group spacing
+.form-group {
+  position: relative;
+  
+  label {
+    font-weight: 500;
+    color: #374151;
+  }
+}
+
+// Checkbox styling
+.p-checkbox {
+  .p-checkbox-box {
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: #667eea;
+    }
+  }
+  
+  &.p-checkbox-checked .p-checkbox-box {
+    background: #667eea;
+    border-color: #667eea;
+  }
+}
+
+// Password component styling
+::ng-deep {
+  .p-password {
+    width: 100%;
+    
+    .p-inputtext {
+      width: 100%;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+      }
+    }
+  }
+  
+  .p-message {
+    margin: 0;
+    
+    .p-message-wrapper {
+      border-radius: 8px;
+    }
+  }
+}
+
+// Grid responsive adjustments
+@media (max-width: 768px) {
+  .register-container {
+    padding: 1rem;
+  }
+  
+  .register-form {
+    padding: 1.5rem;
+  }
+  
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Loading state
+.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+// Success message styling
+.success-message {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Terms and conditions links
+a {
+  transition: color 0.3s ease;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .register-form {
+    background: rgba(31, 41, 55, 0.95);
+    color: #f9fafb;
+    
+    label {
+      color: #f3f4f6;
+    }
+  }
+  
+  .form-input {
+    background: rgba(55, 65, 81, 0.5);
+    border-color: rgba(75, 85, 99, 0.5);
+    color: #f9fafb;
+    
+    &::placeholder {
+      color: rgba(156, 163, 175, 0.8);
+    }
+  }
+  
+  .social-btn {
+    background: rgba(55, 65, 81, 0.8);
+    border-color: rgba(75, 85, 99, 0.5);
+    color: #f9fafb;
+    
+    &:hover {
+      background: rgba(75, 85, 99, 0.8);
+    }
+  }
+}

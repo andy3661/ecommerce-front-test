@@ -1,0 +1,333 @@
+// Profile component styles
+.profile-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+// Custom tab styling
+::ng-deep .profile-tabs {
+  .p-tabview-nav {
+    background: white;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    li {
+      .p-tabview-nav-link {
+        border: none;
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background-color: #f8fafc;
+        }
+        
+        &:focus {
+          box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+      }
+      
+      &.p-highlight .p-tabview-nav-link {
+        background-color: #667eea;
+        color: white;
+        
+        .p-tabview-title {
+          color: white;
+        }
+        
+        i {
+          color: white;
+        }
+      }
+    }
+  }
+  
+  .p-tabview-panels {
+    background: white;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+}
+
+// Form styling
+::ng-deep {
+  .p-inputtext,
+  .p-dropdown,
+  .p-calendar input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    &.ng-invalid.ng-dirty {
+      border-color: #ef4444;
+      
+      &:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      }
+    }
+  }
+  
+  .p-password input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+  }
+  
+  .p-dropdown-panel {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .p-calendar-panel {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Card styling
+::ng-deep .p-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .p-card-header {
+    padding: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .p-card-content {
+    padding: 1.5rem;
+  }
+}
+
+// Avatar styling
+::ng-deep .p-avatar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &.p-avatar-xlarge {
+    width: 6rem;
+    height: 6rem;
+    font-size: 2rem;
+  }
+}
+
+// File upload styling
+::ng-deep .p-fileupload-basic {
+  .p-button {
+    width: 100%;
+    justify-content: center;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    
+    &:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+  }
+}
+
+// Input switch styling
+::ng-deep .p-inputswitch {
+  &.p-inputswitch-checked .p-inputswitch-slider {
+    background-color: #667eea;
+  }
+  
+  .p-inputswitch-slider {
+    transition: all 0.3s ease;
+    
+    &:before {
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+// Button styling
+::ng-deep .p-button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:not(.p-button-outlined):not(.p-button-text) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  &.p-button-danger {
+    &.p-button-outlined {
+      border-color: #ef4444;
+      color: #ef4444;
+      
+      &:hover {
+        background: #ef4444;
+        color: white;
+      }
+    }
+  }
+}
+
+// Divider styling
+::ng-deep .p-divider {
+  margin: 2rem 0;
+  
+  &.p-divider-horizontal:before {
+    border-top-color: #e5e7eb;
+  }
+}
+
+// Error message styling
+.p-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+// Success message styling
+.p-success {
+  color: #10b981;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+// Notification settings styling
+.notification-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// Account status badge
+.status-badge {
+  &.active {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  &.inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+// Danger zone styling
+.danger-zone {
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  
+  .p-card-header {
+    background-color: #fee2e2;
+    border-bottom-color: #fecaca;
+  }
+}
+
+// Loading states
+.loading-overlay {
+  position: relative;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+  
+  ::ng-deep .profile-tabs {
+    .p-tabview-panels {
+      padding: 1rem;
+    }
+    
+    .p-tabview-nav {
+      li .p-tabview-nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+      }
+    }
+  }
+  
+  ::ng-deep .p-card .p-card-content {
+    padding: 1rem;
+  }
+}
+
+// Animation for form validation
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+// Focus trap styling
+.focus-trap {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+// Custom scrollbar for long content
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+    
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}

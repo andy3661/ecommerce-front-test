@@ -1,0 +1,238 @@
+<div class="register-container flex items-center justify-center p-4">
+  <div class="register-form w-full max-w-md p-8 rounded-lg shadow-xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
+      <p class="text-gray-600">Join us and start shopping today</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage()" class="mb-6">
+      <p-message severity="success" [text]="successMessage()!" class="w-full"></p-message>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage()" class="mb-6">
+      <p-message severity="error" [text]="errorMessage()!" class="w-full"></p-message>
+    </div>
+
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Name Fields -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- First Name -->
+        <div class="form-group">
+          <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+            First Name *
+          </label>
+          <input
+            pInputText
+            id="firstName"
+            formControlName="firstName"
+            placeholder="Enter your first name"
+            class="form-input w-full"
+            [class.p-invalid]="isFieldInvalid('firstName')"
+            autocomplete="given-name"
+          />
+          <small *ngIf="getFieldError('firstName')" class="text-red-500 text-xs mt-1 block error-message">
+            {{ getFieldError('firstName') }}
+          </small>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+            Last Name *
+          </label>
+          <input
+            pInputText
+            id="lastName"
+            formControlName="lastName"
+            placeholder="Enter your last name"
+            class="form-input w-full"
+            [class.p-invalid]="isFieldInvalid('lastName')"
+            autocomplete="family-name"
+          />
+          <small *ngIf="getFieldError('lastName')" class="text-red-500 text-xs mt-1 block error-message">
+            {{ getFieldError('lastName') }}
+          </small>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+          Email Address *
+        </label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email address"
+          class="form-input w-full"
+          [class.p-invalid]="isFieldInvalid('email')"
+          autocomplete="email"
+        />
+        <small *ngIf="getFieldError('email')" class="text-red-500 text-xs mt-1 block error-message">
+          {{ getFieldError('email') }}
+        </small>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+          Password *
+        </label>
+        <p-password
+          id="password"
+          formControlName="password"
+          placeholder="Create a strong password"
+          [toggleMask]="true"
+          [feedback]="false"
+          class="w-full"
+          [class.p-invalid]="isFieldInvalid('password')"
+          autocomplete="new-password"
+        ></p-password>
+        
+        <!-- Password Strength Indicator -->
+        <div *ngIf="registerForm.get('password')?.value" class="mt-2">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="text-gray-600">Password Strength:</span>
+            <span [class]="getPasswordStrengthClass() + ' text-white px-2 py-1 rounded'">
+              {{ getPasswordStrengthText() }}
+            </span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              class="h-2 rounded-full transition-all duration-300"
+              [class]="getPasswordStrengthClass()"
+              [style.width]="getPasswordStrengthWidth()"
+            ></div>
+          </div>
+          <div *ngIf="passwordStrength().feedback.length > 0" class="mt-1">
+            <small *ngFor="let feedback of passwordStrength().feedback" 
+                   class="block text-xs"
+                   [class.text-red-500]="feedback !== 'Strong password!'"
+                   [class.text-green-500]="feedback === 'Strong password!'">
+              {{ feedback }}
+            </small>
+          </div>
+        </div>
+        
+        <small *ngIf="getFieldError('password')" class="text-red-500 text-xs mt-1 block error-message">
+          {{ getFieldError('password') }}
+        </small>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+          Confirm Password *
+        </label>
+        <p-password
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="Confirm your password"
+          [toggleMask]="true"
+          [feedback]="false"
+          class="w-full"
+          [class.p-invalid]="isFieldInvalid('confirmPassword') || registerForm.errors?.['passwordMismatch']"
+          autocomplete="new-password"
+        ></p-password>
+        <small *ngIf="getFieldError('confirmPassword')" class="text-red-500 text-xs mt-1 block error-message">
+          {{ getFieldError('confirmPassword') }}
+        </small>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="form-group">
+        <div class="flex items-start space-x-3">
+          <p-checkbox
+            formControlName="acceptTerms"
+            [binary]="true"
+            inputId="acceptTerms"
+            [class.p-invalid]="isFieldInvalid('acceptTerms')"
+          ></p-checkbox>
+          <label for="acceptTerms" class="text-sm text-gray-700 leading-5">
+            I agree to the 
+            <a href="/terms" class="text-blue-600 hover:text-blue-800 underline" target="_blank">
+              Terms and Conditions
+            </a> 
+            and 
+            <a href="/privacy" class="text-blue-600 hover:text-blue-800 underline" target="_blank">
+              Privacy Policy
+            </a> *
+          </label>
+        </div>
+        <small *ngIf="getFieldError('acceptTerms')" class="text-red-500 text-xs mt-1 block error-message">
+          {{ getFieldError('acceptTerms') }}
+        </small>
+      </div>
+
+      <!-- Marketing Consent -->
+      <div class="form-group">
+        <div class="flex items-start space-x-3">
+          <p-checkbox
+            formControlName="acceptMarketing"
+            [binary]="true"
+            inputId="acceptMarketing"
+          ></p-checkbox>
+          <label for="acceptMarketing" class="text-sm text-gray-700 leading-5">
+            I would like to receive promotional emails and updates about new products and offers
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        pButton
+        type="submit"
+        label="Create Account"
+        class="btn-primary w-full p-3 text-white font-semibold rounded-lg transition-all duration-300"
+        [disabled]="registerForm.invalid || isLoading()"
+        [loading]="isLoading()"
+        loadingIcon="pi pi-spin pi-spinner"
+      ></button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="text-center mt-6">
+      <p class="text-gray-600">
+        Already have an account?
+        <a routerLink="/auth/login" class="text-blue-600 hover:text-blue-800 font-medium ml-1">
+          Sign in here
+        </a>
+      </p>
+    </div>
+
+    <!-- Social Registration -->
+    <div class="mt-8">
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-300"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-2 bg-white text-gray-500">Or register with</span>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          class="social-btn w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+        >
+          <i class="pi pi-google text-red-500 mr-2"></i>
+          Google
+        </button>
+        <button
+          type="button"
+          class="social-btn w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+        >
+          <i class="pi pi-facebook text-blue-600 mr-2"></i>
+          Facebook
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,226 @@
+<!-- E-commerce Application Layout -->
+<div class="min-h-screen flex flex-col bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <!-- Top Bar -->
+    <div class="bg-primary-600 text-white text-sm py-2">
+      <div class="container-custom flex justify-between items-center">
+        <span>Free shipping on orders over $50</span>
+        <div class="flex items-center space-x-4">
+          <a href="/contact" class="hover:text-primary-200 transition-colors">Contact</a>
+          <a href="/account" class="hover:text-primary-200 transition-colors">My Account</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Header -->
+    <div class="container-custom py-4">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <a routerLink="/" class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
+            E-Store
+          </a>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-2xl mx-8">
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors">
+              <i class="pi pi-search text-lg"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Header Actions -->
+        <div class="flex items-center space-x-6">
+          <!-- Wishlist -->
+          <a routerLink="/wishlist" class="relative text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="pi pi-heart text-xl"></i>
+            <span class="absolute -top-2 -right-2 bg-accent-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+          </a>
+          
+          <!-- Cart -->
+          <a routerLink="/cart" class="relative text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="pi pi-shopping-cart text-xl"></i>
+            <span class="absolute -top-2 -right-2 bg-accent-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+          </a>
+          
+          <!-- User Menu -->
+          <div class="relative" *ngIf="securityService.isAuthenticated; else guestMenu">
+            <div class="flex items-center space-x-4">
+              <!-- User Avatar/Name -->
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                  {{ getUserInitials() }}
+                </div>
+                <span class="hidden md:block text-gray-700 font-medium">{{ getUserDisplayName() }}</span>
+              </div>
+              
+              <!-- Account Dropdown -->
+              <div class="relative group">
+                <button class="text-gray-600 hover:text-primary-600 transition-colors">
+                  <i class="pi pi-chevron-down text-sm"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div class="py-1">
+                    <a routerLink="/account/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                      <i class="pi pi-home mr-2"></i>Dashboard
+                    </a>
+                    <a routerLink="/account/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                      <i class="pi pi-user mr-2"></i>Profile Settings
+                    </a>
+                    <a routerLink="/account/orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                      <i class="pi pi-list mr-2"></i>Order History
+                    </a>
+                    <a routerLink="/account/wishlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                      <i class="pi pi-heart mr-2"></i>Wishlist
+                    </a>
+                    <div class="border-t border-gray-200 my-1"></div>
+                    <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                      <i class="pi pi-sign-out mr-2"></i>Sign Out
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Guest Menu -->
+          <ng-template #guestMenu>
+            <div class="flex items-center space-x-4">
+              <a routerLink="/auth/login" class="text-gray-600 hover:text-primary-600 transition-colors font-medium">
+                Sign In
+              </a>
+              <a routerLink="/auth/register" class="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors font-medium">
+                Sign Up
+              </a>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="border-t border-gray-200">
+      <div class="container-custom">
+        <div class="flex items-center space-x-8 py-4">
+          <a routerLink="/" routerLinkActive="text-primary-600" [routerLinkActiveOptions]="{exact: true}" 
+             class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+            Home
+          </a>
+          <a routerLink="/products" routerLinkActive="text-primary-600" 
+             class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+            All Products
+          </a>
+          <div class="relative group">
+            <button class="text-gray-700 hover:text-primary-600 transition-colors font-medium flex items-center space-x-1">
+              <span>Categories</span>
+              <i class="pi pi-chevron-down text-sm"></i>
+            </button>
+            <!-- Dropdown menu will be implemented later -->
+          </div>
+          <a routerLink="/blog" routerLinkActive="text-primary-600" 
+             class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+            Blog
+          </a>
+          <a routerLink="/about" routerLinkActive="text-primary-600" 
+             class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+            About
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="flex-1">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white mt-16">
+    <div class="container-custom py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Company Info -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">E-Store</h3>
+          <p class="text-gray-300 mb-4">Your trusted online shopping destination with quality products and exceptional service.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-300 hover:text-white transition-colors">
+              <i class="pi pi-facebook text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors">
+              <i class="pi pi-twitter text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors">
+              <i class="pi pi-instagram text-lg"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a routerLink="/about" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
+            <li><a routerLink="/contact" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Shipping Info</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Returns</a></li>
+          </ul>
+        </div>
+        
+        <!-- Customer Service -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+          <ul class="space-y-2">
+            <li><a routerLink="/account" class="text-gray-300 hover:text-white transition-colors">My Account</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Order Tracking</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Size Guide</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a></li>
+          </ul>
+        </div>
+        
+        <!-- Newsletter -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Newsletter</h3>
+          <p class="text-gray-300 mb-4">Subscribe to get updates on new products and offers.</p>
+          <div class="flex">
+            <input 
+              type="email" 
+              placeholder="Your email" 
+              class="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-white"
+            >
+            <button class="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-r-lg transition-colors">
+              <i class="pi pi-send"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Footer -->
+      <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-300 text-sm">
+          © 2024 E-Store. All rights reserved.
+        </p>
+        <div class="flex items-center space-x-4 mt-4 md:mt-0">
+          <span class="text-gray-300 text-sm">We accept:</span>
+          <div class="flex space-x-2">
+            <i class="pi pi-credit-card text-gray-300"></i>
+            <span class="text-gray-300 text-sm">Visa, MasterCard, PayPal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+

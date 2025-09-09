@@ -1,0 +1,240 @@
+// Dashboard component styles
+.dashboard-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+// Stat cards styling
+.stat-card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  ::ng-deep .p-card-body {
+    padding: 1.5rem;
+  }
+}
+
+// Loyalty level chips
+::ng-deep {
+  .loyalty-bronze {
+    background-color: #cd7f32 !important;
+    color: white !important;
+    border: none !important;
+  }
+  
+  .loyalty-silver {
+    background-color: #c0c0c0 !important;
+    color: #333 !important;
+    border: none !important;
+  }
+  
+  .loyalty-gold {
+    background-color: #ffd700 !important;
+    color: #333 !important;
+    border: none !important;
+  }
+  
+  .loyalty-platinum {
+    background: linear-gradient(135deg, #e5e5e5 0%, #f0f0f0 100%) !important;
+    color: #333 !important;
+    border: 2px solid #d4d4d4 !important;
+    font-weight: 600 !important;
+  }
+}
+
+// Loyalty progress bar
+::ng-deep .loyalty-progress {
+  .p-progressbar {
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .p-progressbar-value {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.6s ease;
+  }
+}
+
+// Order status indicators
+.order-status {
+  &.delivered {
+    background-color: #10b981;
+    color: white;
+  }
+  
+  &.shipped {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  &.processing {
+    background-color: #f59e0b;
+    color: white;
+  }
+  
+  &.pending {
+    background-color: #6b7280;
+    color: white;
+  }
+  
+  &.cancelled {
+    background-color: #ef4444;
+    color: white;
+  }
+}
+
+// Card hover effects
+::ng-deep .p-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+  
+  &:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Quick action buttons
+::ng-deep .p-button-outlined {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+  }
+}
+
+// Order item hover effect
+.order-item {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+}
+
+// Avatar styling
+::ng-deep .p-avatar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  &.p-avatar-lg {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.5rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+  
+  .stat-card {
+    ::ng-deep .p-card-body {
+      padding: 1rem;
+    }
+  }
+  
+  .loyalty-chip {
+    font-size: 0.875rem;
+  }
+}
+
+// Loading skeleton animations
+::ng-deep .p-skeleton {
+  animation: skeleton-loading 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+// Welcome section styling
+.welcome-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  
+  .user-info {
+    h1 {
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// Status icon animations
+.status-icon {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+// Progress animation
+.progress-enter {
+  animation: progressSlide 0.8s ease-out;
+}
+
+@keyframes progressSlide {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--progress-width);
+  }
+}
+
+// Card content spacing
+::ng-deep .p-card-content {
+  padding: 0 !important;
+}
+
+::ng-deep .p-card-header {
+  padding: 0 !important;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+// Custom scrollbar for order list
+.order-list {
+  max-height: 400px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+    
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}

@@ -1,0 +1,226 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <div class="bg-white border-b">
+    <div class="container-custom py-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+          <p class="text-gray-600 mt-1">{{ cartService.itemCount() }} items in your cart</p>
+        </div>
+        <button 
+          routerLink="/products" 
+          class="btn-outline">
+          <i class="pi pi-arrow-left mr-2"></i>
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-custom py-8">
+    <!-- Empty Cart State -->
+    <div *ngIf="cartService.itemCount() === 0" class="text-center py-16">
+      <div class="max-w-md mx-auto">
+        <div class="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+          <i class="pi pi-shopping-cart text-4xl text-gray-400"></i>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Your cart is empty</h2>
+        <p class="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
+        <button 
+          routerLink="/products" 
+          class="btn-primary px-8 py-3">
+          Start Shopping
+        </button>
+      </div>
+    </div>
+
+    <!-- Cart Items -->
+    <div *ngIf="cartService.itemCount() > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Items List -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div class="p-6 border-b">
+            <h2 class="text-xl font-semibold text-gray-900">Cart Items</h2>
+          </div>
+          
+          <div class="divide-y divide-gray-200">
+            <div *ngFor="let item of cartService.items(); trackBy: trackByItemId" 
+                 class="p-6 hover:bg-gray-50 transition-colors">
+              
+              <!-- Item Content -->
+              <div class="flex items-start space-x-4">
+                <!-- Product Image -->
+                <div class="flex-shrink-0">
+                      <img 
+                        [src]="item.imageUrl || '/assets/placeholder.jpg'" 
+                        [alt]="item.name"
+                        class="w-20 h-20 object-cover rounded-lg border">
+                    </div>
+                
+                <!-- Product Details -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <h3 class="text-lg font-medium text-gray-900 mb-1">
+                            <a [routerLink]="['/products', item.productId]" 
+                               class="hover:text-blue-600 transition-colors">
+                              {{ item.name }}
+                            </a>
+                          </h3>
+                      
+                      <!-- Variant Info -->
+                          <div *ngIf="item.variant" class="text-sm text-gray-600 mb-2">
+                            <span *ngIf="item.variant.color" class="mr-3">
+                              Color: {{ item.variant.color.name }}
+                            </span>
+                            <span *ngIf="item.variant.size">
+                              Size: {{ item.variant.size.name }}
+                            </span>
+                          </div>
+                      
+                      <!-- Price -->
+                          <div class="flex items-center space-x-2 mb-3">
+                            <span class="text-lg font-semibold text-gray-900">
+                              ${{ item.price.toFixed(2) }}
+                            </span>
+                            <span *ngIf="item.originalPrice && item.originalPrice > item.price" 
+                                  class="text-sm text-gray-500 line-through">
+                              ${{ item.originalPrice.toFixed(2) }}
+                            </span>
+                          </div>
+                      
+                      <!-- Stock Status -->
+                          <div class="mb-3">
+                            <span *ngIf="item.inStock" 
+                                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <i class="pi pi-check-circle mr-1"></i>
+                              In Stock
+                            </span>
+                            <span *ngIf="!item.inStock" 
+                                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              <i class="pi pi-times-circle mr-1"></i>
+                              Out of Stock
+                            </span>
+                          </div>
+                    </div>
+                    
+                    <!-- Remove Button -->
+                    <button 
+                      (click)="removeItem(item.id)"
+                      class="text-gray-400 hover:text-red-500 transition-colors p-1">
+                      <i class="pi pi-trash text-lg"></i>
+                    </button>
+                  </div>
+                  
+                  <!-- Quantity Controls -->
+                  <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center space-x-3">
+                      <label class="text-sm font-medium text-gray-700">Quantity:</label>
+                      <div class="flex items-center border border-gray-300 rounded-lg">
+                        <button 
+                          (click)="updateQuantity(item.id, item.quantity - 1)"
+                          [disabled]="item.quantity <= 1"
+                          class="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                          <i class="pi pi-minus text-sm"></i>
+                        </button>
+                        <input 
+                              type="number" 
+                              [value]="item.quantity"
+                              (change)="updateQuantity(item.id, +$event.target.value)"
+                              min="1" 
+                              [max]="item.maxQuantity"
+                              class="w-16 text-center border-0 focus:ring-0 py-2">
+                        <button 
+                          (click)="updateQuantity(item.id, item.quantity + 1)"
+                          [disabled]="item.quantity >= item.maxQuantity"
+                          class="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                          <i class="pi pi-plus text-sm"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <!-- Item Total -->
+                        <div class="text-right">
+                          <div class="text-lg font-semibold text-gray-900">
+                            ${{ (item.price * item.quantity).toFixed(2) }}
+                          </div>
+                        </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Order Summary -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-sm border sticky top-8">
+          <div class="p-6 border-b">
+            <h2 class="text-xl font-semibold text-gray-900">Order Summary</h2>
+          </div>
+          
+          <div class="p-6 space-y-4">
+            <div class="flex justify-between text-gray-600">
+              <span>Subtotal ({{ cartService.itemCount() }} items)</span>
+              <span>${{ cartService.summary().subtotal.toFixed(2) }}</span>
+            </div>
+            
+            <div class="flex justify-between text-gray-600">
+              <span>Shipping</span>
+              <span *ngIf="cartService.summary().shipping === 0" class="text-green-600 font-medium">
+                FREE
+              </span>
+              <span *ngIf="cartService.summary().shipping > 0">
+                ${{ cartService.summary().shipping.toFixed(2) }}
+              </span>
+            </div>
+            
+            <div *ngIf="cartService.summary().shipping > 0" class="text-sm text-gray-500">
+              <i class="pi pi-info-circle mr-1"></i>
+              Free shipping on orders over ${{ freeShippingThreshold }}
+            </div>
+            
+            <div class="flex justify-between text-gray-600">
+              <span>Tax</span>
+              <span>${{ cartService.summary().tax.toFixed(2) }}</span>
+            </div>
+            
+            <div *ngIf="cartService.summary().discount > 0" class="flex justify-between text-green-600">
+              <span>Discount</span>
+              <span>-${{ cartService.summary().discount.toFixed(2) }}</span>
+            </div>
+            
+            <hr class="border-gray-200">
+            
+            <div class="flex justify-between text-lg font-semibold text-gray-900">
+              <span>Total</span>
+              <span>${{ cartService.summary().total.toFixed(2) }}</span>
+            </div>
+            
+            <!-- Estimated Delivery -->
+            <div class="text-sm text-gray-600 pt-2">
+              <i class="pi pi-truck mr-1"></i>
+              Estimated delivery: {{ getEstimatedDelivery() | date:'MMM d, y' }}
+            </div>
+          </div>
+          
+          <div class="p-6 border-t">
+            <button 
+              (click)="proceedToCheckout()"
+              [disabled]="!isCartValid()"
+              class="w-full btn-primary py-4 text-lg rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
+              <i class="pi pi-credit-card mr-2"></i>
+              Proceed to Checkout
+            </button>
+            
+            <div *ngIf="!isCartValid()" class="mt-3 text-sm text-red-600">
+              <i class="pi pi-exclamation-triangle mr-1"></i>
+              Please resolve cart issues before checkout
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

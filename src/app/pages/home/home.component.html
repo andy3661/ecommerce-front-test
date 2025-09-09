@@ -1,0 +1,258 @@
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white overflow-hidden">
+  <div class="absolute inset-0 bg-black opacity-20"></div>
+  <div class="relative container-custom py-20 lg:py-32">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <h1 class="text-4xl lg:text-6xl font-bold leading-tight">
+          Discover Amazing
+          <span class="text-yellow-300">Products</span>
+        </h1>
+        <p class="text-xl lg:text-2xl text-primary-100 leading-relaxed">
+          Shop the latest trends with unbeatable prices and fast, free shipping on orders over $50.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <p-button 
+            label="Shop Now" 
+            icon="pi pi-arrow-right" 
+            iconPos="right"
+            routerLink="/products"
+            styleClass="p-button-lg p-button-rounded text-lg px-8 py-4">
+          </p-button>
+          <p-button 
+            label="Learn More" 
+            icon="pi pi-info-circle" 
+            iconPos="right"
+            routerLink="/about"
+            styleClass="p-button-lg p-button-rounded p-button-outlined text-lg px-8 py-4">
+          </p-button>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-3xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white bg-opacity-20 rounded-2xl p-4 text-center">
+              <i class="pi pi-truck text-3xl mb-2"></i>
+              <p class="font-semibold">Free Shipping</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-2xl p-4 text-center">
+              <i class="pi pi-shield text-3xl mb-2"></i>
+              <p class="font-semibold">Secure Payment</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-2xl p-4 text-center">
+              <i class="pi pi-refresh text-3xl mb-2"></i>
+              <p class="font-semibold">Easy Returns</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-2xl p-4 text-center">
+              <i class="pi pi-headphones text-3xl mb-2"></i>
+              <p class="font-semibold">24/7 Support</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-16 bg-white">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Explore our wide range of products across different categories
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let category of categories" 
+           class="group relative overflow-hidden rounded-2xl bg-gray-100 aspect-square cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-strong">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
+        <div class="absolute inset-0 bg-primary-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+        
+        <!-- Placeholder for category image -->
+        <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+          <i class="pi pi-image text-6xl text-gray-400"></i>
+        </div>
+        
+        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <h3 class="text-xl font-bold mb-1">{{ category.name }}</h3>
+          <p class="text-sm opacity-90">{{ category.productCount }} products</p>
+          <a [routerLink]="['/category', category.slug]" 
+             class="inline-flex items-center mt-3 text-sm font-medium text-yellow-300 hover:text-yellow-200 transition-colors">
+            Shop Now
+            <i class="pi pi-arrow-right ml-1 text-xs"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="py-16 bg-gray-50">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Discover our handpicked selection of trending products
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let product of featuredProducts" 
+           class="card group cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-strong">
+        
+        <!-- Product Badge -->
+        <div *ngIf="product.badge" 
+             class="absolute top-4 left-4 z-10 px-3 py-1 rounded-full text-xs font-bold text-white"
+             [ngClass]="{
+               'bg-red-500': product.badge === 'Sale',
+               'bg-green-500': product.badge === 'New',
+               'bg-blue-500': product.badge === 'Popular'
+             }">
+          {{ product.badge }}
+        </div>
+        
+        <!-- Product Image -->
+        <div class="relative overflow-hidden bg-gray-100 aspect-square">
+          <!-- Placeholder for product image -->
+          <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <i class="pi pi-image text-4xl text-gray-400"></i>
+          </div>
+          
+          <!-- Quick Actions -->
+          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+            <div class="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <button class="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-600 hover:text-white transition-colors shadow-lg">
+                <i class="pi pi-heart"></i>
+              </button>
+              <button class="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-600 hover:text-white transition-colors shadow-lg">
+                <i class="pi pi-eye"></i>
+              </button>
+              <button class="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-600 hover:text-white transition-colors shadow-lg">
+                <i class="pi pi-shopping-cart"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="p-6">
+          <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            {{ product.name }}
+          </h3>
+          
+          <!-- Rating -->
+          <div class="flex items-center mb-3">
+            <div class="flex items-center space-x-1">
+              <span *ngFor="let star of getStarArray(product.rating)" 
+                    class="text-yellow-400"
+                    [ngClass]="{
+                      'pi pi-star-fill': star === 1,
+                      'pi pi-star': star === 0
+                    }">
+              </span>
+            </div>
+            <span class="text-sm text-gray-500 ml-2">
+              {{ product.rating }} ({{ product.reviews }})
+            </span>
+          </div>
+          
+          <!-- Price -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl font-bold text-gray-900">
+                ${{ product.price }}
+              </span>
+              <span *ngIf="product.originalPrice" 
+                    class="text-sm text-gray-500 line-through">
+                ${{ product.originalPrice }}
+              </span>
+            </div>
+            <a [routerLink]="['/products', product.id]" 
+               class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+              View Details
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-12">
+      <a routerLink="/products" class="btn-primary text-lg px-8 py-4 rounded-2xl">
+        View All Products
+        <i class="pi pi-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-16 bg-primary-600 text-white">
+  <div class="container-custom">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold mb-4">
+        Stay Updated with Our Latest Offers
+      </h2>
+      <p class="text-xl text-primary-100 mb-8">
+        Subscribe to our newsletter and be the first to know about new products, exclusive deals, and special promotions.
+      </p>
+      
+      <div class="max-w-md mx-auto">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input 
+            type="email" 
+            placeholder="Enter your email address" 
+            class="flex-1 px-4 py-3 rounded-lg border-0 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+          >
+          <button class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-lg transition-colors">
+            Subscribe
+          </button>
+        </div>
+        <p class="text-sm text-primary-200 mt-3">
+          We respect your privacy. Unsubscribe at any time.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 bg-white">
+  <div class="container-custom">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="text-center">
+        <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="pi pi-truck text-2xl text-primary-600"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Free Shipping</h3>
+        <p class="text-gray-600">Free shipping on all orders over $50. Fast and reliable delivery.</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="pi pi-refresh text-2xl text-primary-600"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Easy Returns</h3>
+        <p class="text-gray-600">30-day return policy. No questions asked, hassle-free returns.</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="pi pi-shield text-2xl text-primary-600"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Secure Payment</h3>
+        <p class="text-gray-600">Your payment information is safe and secure with us.</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="pi pi-headphones text-2xl text-primary-600"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">24/7 Support</h3>
+        <p class="text-gray-600">Round-the-clock customer support for all your needs.</p>
+      </div>
+    </div>
+  </div>
+</section>
