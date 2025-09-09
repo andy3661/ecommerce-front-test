@@ -1,8 +1,11 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import { AnalyticsService } from './analytics.service';
 import { EmailService } from './email.service';
 import { SecurityService } from './security.service';
+import { ApiService, ApiResponse } from './api.service';
+import { of } from 'rxjs';
 
 export interface CartItem {
   id: string;
@@ -41,6 +44,7 @@ export class CartService {
   private analyticsService = inject(AnalyticsService);
   private emailService = inject(EmailService);
   private securityService = inject(SecurityService);
+  private apiService = inject(ApiService);
 
   // Reactive state using signals
   private cartItems = signal<CartItem[]>(this.loadCartFromStorage());
@@ -74,6 +78,13 @@ export class CartService {
   constructor() {
     // Sync signal changes with BehaviorSubject and localStorage
     this.cartItems.set(this.loadCartFromStorage());
+    
+    // Load cart from backend if user is authenticated
+    this.securityService.authState$.subscribe(authState => {
+      if (authState.isAuthenticated) {
+        this.syncCartWithBackend();
+      }
+    });
   }
 
   private loadCartFromStorage(): CartItem[] {
@@ -100,7 +111,7 @@ export class CartService {
     this.saveCartToStorage(items);
   }
 
-  addItem(product: any, quantity: number = 1, variant?: any): boolean {
+  addItem(product: any, quantity: number = 1, variant?: any): Observable<boolean> {
     const currentItems = [...this.cartItems()];
     
     // Create unique item ID based on product and variants
@@ -115,7 +126,7 @@ export class CartService {
       const newQuantity = existingItem.quantity + quantity;
       
       if (newQuantity > existingItem.maxQuantity) {
-        return false; // Cannot add more than max quantity
+        return of(false); // Cannot add more than max quantity
       }
       
       currentItems[existingItemIndex] = {
@@ -143,8 +154,49 @@ export class CartService {
       currentItems.push(newItem);
     }
     
+    // Update local cart first
     this.updateCart(currentItems);
-    return true;
+    
+    // Sync with backend if authenticated
+    if (this.securityService.isAuthenticated) {
+      return this.addItemToBackend(product.id, quantity, variant).pipe(
+        map(() => {
+          // Track add to cart event
+          this.analyticsService.trackEvent({
+            event: 'add_to_cart',
+            event_category: 'ecommerce',
+            event_label: product.name,
+            value: product.price * quantity,
+            custom_parameters: {
+              item_id: product.id,
+              item_name: product.name,
+              currency: 'USD',
+              quantity
+            }
+          });
+          return true;
+        }),
+        catchError(error => {
+          console.error('Error adding item to backend cart:', error);
+          return of(true); // Still return true as local cart was updated
+        })
+      );
+    } else {
+      // Track add to cart event for guest users
+      this.analyticsService.trackEvent({
+        event: 'add_to_cart',
+        event_category: 'ecommerce',
+        event_label: product.name,
+        value: product.price * quantity,
+        custom_parameters: {
+          item_id: product.id,
+          item_name: product.name,
+          currency: 'USD',
+          quantity
+        }
+      });
+      return of(true);
+    }
   }
 
   removeItem(itemId: string): void {
@@ -318,6 +370,131 @@ export class CartService {
         quantity: item.quantity,
         currency: 'USD'
       }));
+      
+      this.analyticsService.trackPurchase(transactionId, analyticsItems, summary.total);
+    }
+  }
+
+  // Backend synchronization methods
+  private syncCartWithBackend(): void {
+    if (!this.securityService.isAuthenticated) {
+      return;
+    }
+
+    this.apiService.get<CartItem[]>('cart').subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Merge backend cart with local cart
+          const backendItems = response.data;
+          const localItems = this.cartItems();
+          
+          // For now, prioritize backend cart
+          // In production, you might want more sophisticated merging logic
+          if (backendItems.length > 0) {
+            this.updateCart(backendItems);
+          } else if (localItems.length > 0) {
+            // Sync local cart to backend
+            this.syncLocalCartToBackend(localItems);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error syncing cart with backend:', error);
+      }
+    });
+  }
+
+  private syncLocalCartToBackend(items: CartItem[]): void {
+    const cartData = {
+      items: items.map(item => ({
+        product_id: item.productId,
+        quantity: item.quantity,
+        product_variant: item.variant
+      }))
+    };
+
+    this.apiService.post('cart/sync', cartData).subscribe({
+      next: (response) => {
+        console.log('Local cart synced to backend successfully');
+      },
+      error: (error) => {
+        console.error('Error syncing local cart to backend:', error);
+      }
+    });
+  }
+
+  private addItemToBackend(productId: string, quantity: number, variant?: any): Observable<any> {
+    const data = {
+      product_id: productId,
+      quantity,
+      product_variant: variant
+    };
+
+    return this.apiService.post('cart/add', data);
+  }
+
+  private updateItemInBackend(productId: string, quantity: number, variant?: any): Observable<any> {
+    const data = {
+      product_id: productId,
+      quantity,
+      product_variant: variant
+    };
+
+    return this.apiService.put('cart/update', data);
+  }
+
+  private removeItemFromBackend(productId: string, variant?: any): Observable<any> {
+    const data = {
+      product_id: productId,
+      product_variant: variant
+    };
+
+    return this.apiService.post('cart/remove', data);
+  }
+
+  private clearBackendCart(): Observable<any> {
+    return this.apiService.delete('cart/clear');
+  }
+
+  // Get cart count from backend
+  getCartCountFromBackend(): Observable<number> {
+    return this.apiService.get<{ count: number }>('cart/count').pipe(
+      map(response => response.data?.count || 0),
+      catchError(() => of(0))
+    );
+  }
+
+  // Apply coupon
+  applyCoupon(couponCode: string): Observable<{ success: boolean; discount: number; message: string }> {
+    return this.apiService.post<{ discount: number; message: string }>('cart/coupon', {
+      coupon_code: couponCode
+    }).pipe(
+      map(response => ({
+        success: response.success,
+        discount: response.data?.discount || 0,
+        message: response.message || 'Coupon applied successfully'
+      })),
+      catchError(error => of({
+        success: false,
+        discount: 0,
+        message: error.message || 'Invalid coupon code'
+      }))
+    );
+  }
+
+  // Remove coupon
+  removeCoupon(): Observable<{ success: boolean; message: string }> {
+    return this.apiService.delete<any>('cart/coupon').pipe(
+      map(response => ({
+        success: response.success,
+        message: response.message || 'Coupon removed successfully'
+      })),
+      catchError(error => of({
+        success: false,
+        message: error.message || 'Error removing coupon'
+      }))
+    );
+  }
       
       this.analyticsService.trackPurchase(transactionId, analyticsItems, summary.total);
       

@@ -3,6 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { EmailService } from './email.service';
 import { AnalyticsService } from './analytics.service';
+import { ApiService, ApiResponse } from './api.service';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 export interface User {
   id: string;
@@ -43,6 +46,7 @@ export class SecurityService {
   private router = inject(Router);
   private emailService = inject(EmailService);
   private analyticsService = inject(AnalyticsService);
+  private apiService = inject(ApiService);
   
   private readonly TOKEN_KEY = 'auth_token';
   private readonly REFRESH_TOKEN_KEY = 'refresh_token';
@@ -122,11 +126,18 @@ export class SecurityService {
 
   async login(credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> {
     try {
-      // Simulate API call - replace with actual backend integration
-      const response = await this.mockLogin(credentials);
+      const response = await this.apiService.post<{
+        user: User;
+        token: string;
+        refresh_token?: string;
+      }>('auth/login', {
+        email: credentials.email,
+        password: credentials.password,
+        remember_me: credentials.rememberMe
+      }).toPromise();
       
-      if (response.success && response.user && response.token) {
-        this.setAuthData(response.user, response.token, response.refreshToken);
+      if (response?.success && response.data.user && response.data.token) {
+        this.setAuthData(response.data.user, response.data.token, response.data.refresh_token);
         
         // Track login event
         this.analyticsService.trackEvent({
@@ -135,17 +146,17 @@ export class SecurityService {
           event_label: 'user_login',
           custom_parameters: {
             method: 'email',
-            user_id: response.user.id
+            user_id: response.data.user.id
           }
         });
         
         return { success: true };
       }
       
-      return { success: false, error: response.error || 'Login failed' };
-    } catch (error) {
+      return { success: false, error: response?.message || 'Login failed' };
+    } catch (error: any) {
       console.error('Login error:', error);
-      return { success: false, error: 'Network error occurred' };
+      return { success: false, error: error.message || 'Network error occurred' };
     }
   }
   
@@ -157,14 +168,24 @@ export class SecurityService {
         return { success: false, error: validation.error };
       }
       
-      // Simulate API call - replace with actual backend integration
-      const response = await this.mockRegister(data);
+      const response = await this.apiService.post<{
+        user: User;
+        token: string;
+        refresh_token?: string;
+      }>('auth/register', {
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.password,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        accept_terms: data.acceptTerms
+      }).toPromise();
       
-      if (response.success && response.user && response.token) {
-        this.setAuthData(response.user, response.token, response.refreshToken);
+      if (response?.success && response.data.user && response.data.token) {
+        this.setAuthData(response.data.user, response.data.token, response.data.refresh_token);
         
         // Send welcome email
-        this.emailService.sendWelcomeEmail(response.user.email, response.user.firstName).subscribe({
+        this.emailService.sendWelcomeEmail(response.data.user.email, response.data.user.firstName).subscribe({
           next: () => console.log('Welcome email sent successfully'),
           error: (error) => console.error('Failed to send welcome email:', error)
         });
@@ -176,23 +197,30 @@ export class SecurityService {
           event_label: 'user_registration',
           custom_parameters: {
             method: 'email',
-            user_id: response.user.id
+            user_id: response.data.user.id
           }
         });
         
         return { success: true };
       }
       
-      return { success: false, error: response.error || 'Registration failed' };
-    } catch (error) {
+      return { success: false, error: response?.message || 'Registration failed' };
+    } catch (error: any) {
       console.error('Registration error:', error);
-      return { success: false, error: 'Network error occurred' };
+      return { success: false, error: error.message || 'Network error occurred' };
     }
   }
   
-  logout(): void {
-    this.clearAuthData();
-    this.router.navigate(['/']);
+  async logout(): Promise<void> {
+    try {
+      // Call backend logout endpoint
+      await this.apiService.post('auth/logout', {}).toPromise();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      this.clearAuthData();
+      this.router.navigate(['/']);
+    }
   }
   
   async refreshToken(): Promise<boolean> {
@@ -202,16 +230,24 @@ export class SecurityService {
         return false;
       }
       
-      // Simulate API call - replace with actual backend integration
-      const response = await this.mockRefreshToken(refreshToken);
+      const response = await this.apiService.post<{
+        token: string;
+        refresh_token?: string;
+      }>('auth/refresh', {
+        refresh_token: refreshToken
+      }).toPromise();
       
-      if (response.success && response.token) {
+      if (response?.success && response.data.token) {
         const currentState = this.authState.value;
         this.authState.next({
           ...currentState,
-          token: response.token
+          token: response.data.token,
+          refreshToken: response.data.refresh_token || refreshToken
         });
-        this.storeToken(response.token);
+        this.storeToken(response.data.token);
+        if (response.data.refresh_token) {
+          this.storeRefreshToken(response.data.refresh_token);
+        }
         return true;
       }
       
